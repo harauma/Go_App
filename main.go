@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go_todo/app/controllers"
 	"go_todo/app/models"
 )
 
@@ -14,6 +15,8 @@ func main() {
 	// log.Panicln("test")
 
 	fmt.Println(models.Db)
+
+	controllers.StartMainServer()
 
 	// u := &models.User{}
 	// u.Name = "test"
@@ -60,6 +63,6 @@ func main() {
 	// t.Content = "Update Todo"
 	// t.UpdateTodo()
 
-	t, _ := models.GetTodo(3)
-	t.DeleteTodo()
+	// t, _ := models.GetTodo(3)
+	// t.DeleteTodo()
 }
