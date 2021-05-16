@@ -65,4 +65,17 @@ func main() {
 
 	// t, _ := models.GetTodo(3)
 	// t.DeleteTodo()
+
+	//sessiontest
+	// user, _ := models.GetUserByEmail("test@example.com")
+	// fmt.Println(user)
+
+	// session, err := user.CreateSession()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// fmt.Println(session)
+
+	// valid, _ := session.CheckSession()
+	// fmt.Println(valid)
 }
