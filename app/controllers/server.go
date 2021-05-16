@@ -31,10 +31,10 @@ func session(w http.ResponseWriter, r *http.Request) (sess models.Session, err e
 	return sess, err
 }
 
-//todo/edit or todo/update比較用URL
-var validPath = regexp.MustCompile("^/todos/(edit|update)/([0-9]+)$")
+//todo/edit or todo/update or todo/delete比較用URL
+var validPath = regexp.MustCompile("^/todos/(edit|update|delete)/([0-9]+)$")
 
-//URLからidを取得しeditまたはupdateのハンドラーを呼び出す
+//URLからidを取得しeditまたはupdateまたはdeleteのハンドラーを呼び出す
 func parseURL(fn func(http.ResponseWriter, *http.Request, int)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//URLの比較
@@ -68,5 +68,6 @@ func StartMainServer() error {
 	http.HandleFunc("/todos/save", todoSave)
 	http.HandleFunc("/todos/edit/", parseURL(todoEdit))
 	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
+	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
 	return http.ListenAndServe(":"+config.Config.Port, nil)
 }
