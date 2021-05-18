@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"github.com/lib/pq"
 )
 
@@ -24,10 +23,6 @@ var err error
 // )
 
 func init() {
-	err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
-	if err != nil {
-		log.Fatalln(err)
-	}
 	appEnv := config.Config.AppEnv
 	if appEnv == "production" {
 		url := os.Getenv("DATABASE_URL")
