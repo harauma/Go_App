@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go_todo/app/models"
 	"go_todo/config"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -71,6 +72,14 @@ func StartMainServer() error {
 	http.HandleFunc("/todos/update/", parseURL(todoUpdate))
 	http.HandleFunc("/todos/delete/", parseURL(todoDelete))
 
-	port := os.Getenv("PORT")
+	appEnv := config.Config.AppEnv
+	port := ""
+	if appEnv == "production" {
+		port = os.Getenv("PORT")
+	} else if appEnv == "develop" {
+		port = config.Config.Port
+	} else {
+		log.Fatalln("error")
+	}
 	return http.ListenAndServe(":"+port, nil)
 }

@@ -9,6 +9,7 @@ import (
 func top(w http.ResponseWriter, r *http.Request) {
 	_, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		generateHTML(w, "Hello", "layout", "public_navbar", "top")
 	} else {
 		http.Redirect(w, r, "/todos", 302)
@@ -18,6 +19,7 @@ func top(w http.ResponseWriter, r *http.Request) {
 func index(w http.ResponseWriter, r *http.Request) {
 	sess, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/", 302)
 	} else {
 		user, err := sess.GetUserBySession()
@@ -36,6 +38,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 func todoNew(w http.ResponseWriter, r *http.Request) {
 	_, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", 302)
 	} else {
 		generateHTML(w, nil, "layout", "private_navbar", "todo_new")
@@ -45,6 +48,7 @@ func todoNew(w http.ResponseWriter, r *http.Request) {
 func todoSave(w http.ResponseWriter, r *http.Request) {
 	sess, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", 302)
 	} else {
 		err = r.ParseForm()
@@ -68,6 +72,7 @@ func todoEdit(w http.ResponseWriter, r *http.Request, id int) {
 	//sessionの取得
 	sess, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", 302)
 	} else {
 		_, err := sess.GetUserBySession()
@@ -86,6 +91,7 @@ func todoEdit(w http.ResponseWriter, r *http.Request, id int) {
 func todoUpdate(w http.ResponseWriter, r *http.Request, id int) {
 	sess, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", 302)
 	} else {
 		err := r.ParseForm()
@@ -112,6 +118,7 @@ func todoUpdate(w http.ResponseWriter, r *http.Request, id int) {
 func todoDelete(w http.ResponseWriter, r *http.Request, id int) {
 	sess, err := session(w, r)
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", 302)
 	} else {
 		_, err := sess.GetUserBySession()

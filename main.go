@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go_todo/app/controllers"
 	"go_todo/app/models"
+	"log"
 )
 
 func main() {
@@ -16,7 +17,8 @@ func main() {
 
 	fmt.Println(models.Db)
 
-	controllers.StartMainServer()
+	err := controllers.StartMainServer()
+	log.Fatalln(err)
 
 	// u := &models.User{}
 	// u.Name = "test"

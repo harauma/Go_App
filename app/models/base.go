@@ -28,7 +28,7 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	appEnv := os.Getenv("APP_ENV")
+	appEnv := config.Config.AppEnv
 	if appEnv == "production" {
 		url := os.Getenv("DATABASE_URL")
 		connection, _ := pq.ParseURL(url)
