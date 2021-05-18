@@ -31,9 +31,11 @@ func LoadConfig() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	err = godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
-	if err != nil {
-		log.Fatalln(err)
+	if os.Getenv("APP_ENV") != "production" {
+		err = godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	Config = ConfigList{
 		Port:      cfg.Section("web").Key("Port").MustString("8080"),
