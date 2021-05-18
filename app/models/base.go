@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/lib/pq"
 )
 
@@ -23,12 +24,28 @@ var err error
 // )
 
 func init() {
-	url := os.Getenv("DATABASE_URL")
-	connection, _ := pq.ParseURL(url)
-	connection += "sslmode=require"
-	Db, err = sql.Open(config.Config.SQLDriver, connection)
+	err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
 	if err != nil {
 		log.Fatalln(err)
+	}
+	appEnv := os.Getenv("APP_ENV")
+	if appEnv == "production" {
+		url := os.Getenv("DATABASE_URL")
+		connection, _ := pq.ParseURL(url)
+		connection += "sslmode=require"
+		Db, err = sql.Open(config.Config.SQLDriver, connection)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else if appEnv == "develop" {
+		log.Println(appEnv)
+		connection := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("PASSWORD"))
+		Db, err = sql.Open(config.Config.SQLDriver, connection)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		log.Fatalln("error" + appEnv)
 	}
 
 	// Db, err = sql.Open(config.Config.SQLDriver, config.Config.DbName)
