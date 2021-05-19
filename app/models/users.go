@@ -39,7 +39,7 @@ func (u *User) CreateUser() (err error) {
 		time.Now())
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return err
 }
