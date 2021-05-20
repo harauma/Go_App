@@ -31,7 +31,8 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		}
 		if &user != nil {
 			log.Println("user is already exists")
-			http.Redirect(w, r, "/signup", 302)
+			message := "このメールアドレスはすでに登録されています"
+			generateHTML(w, message, "layout", "public_navbar", "signup")
 		} else {
 			if err := newUser.CreateUser(); err != nil {
 				log.Println(err)
