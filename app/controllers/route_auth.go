@@ -20,16 +20,26 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		user := models.User{
+		newUser := models.User{
 			Name:     r.PostFormValue("name"),
 			Email:    r.PostFormValue("email"),
 			PassWord: r.PostFormValue("password"),
 		}
-		if err := user.CreateUser(); err != nil {
+		user, err := models.GetUserByEmail(newUser.Email)
+		if err != nil {
 			log.Println(err)
 		}
+		if &user != nil {
+			log.Println("user is already exists")
+			message := "このメールアドレスはすでに登録されています"
+			generateHTML(w, message, "layout", "public_navbar", "signup")
+		} else {
+			if err := newUser.CreateUser(); err != nil {
+				log.Println(err)
+			}
 
-		http.Redirect(w, r, "/", 302)
+			http.Redirect(w, r, "/", 302)
+		}
 	}
 }
 
