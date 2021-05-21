@@ -44,12 +44,16 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	_, err := session(w, r)
-	if err != nil {
-		log.Println(err)
-		generateHTML(w, nil, "layout", "public_navbar", "login")
-	} else {
-		http.Redirect(w, r, "/todos", 302)
+	if r.Method == "GET" {
+		_, err := session(w, r)
+		if err != nil {
+			log.Println(err)
+			generateHTML(w, nil, "layout", "public_navbar", "login")
+		} else {
+			http.Redirect(w, r, "/todos", 302)
+		}
+	} else if r.Method == "POST" {
+		authenticate(w, r)
 	}
 }
 
@@ -58,7 +62,9 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	user, err := models.GetUserByEmail(r.PostFormValue("email"))
 	if err != nil {
 		log.Println(err)
-		http.Redirect(w, r, "/login", 302)
+		message := "ログインに失敗しました"
+		generateHTML(w, message, "layout", "public_navbar", "login")
+		return
 	}
 	if user.PassWord == models.Encrypt(r.PostFormValue("password")) {
 		session, err := user.CreateSession()
@@ -74,7 +80,9 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 		http.Redirect(w, r, "/", 302)
 	} else {
-		http.Redirect(w, r, "/login", 302)
+		message := "ログインに失敗しました"
+		generateHTML(w, message, "layout", "public_navbar", "login")
+		return
 	}
 }
 

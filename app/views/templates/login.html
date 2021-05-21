@@ -1,11 +1,12 @@
 {{ define "content" }}
 <h1 class="text-center">login</h1>
-<form class="form-signin center" role="form" action="/authenticate" method="post">
+<form class="form-signin center" role="form" action="/login" method="post">
   <h2 class="form-signin-heading">
     <i class="fa fa-comments-o">
       Go Todoアプリ
     </i>
   </h2>
+  <p style=" color: red; font-size:small">{{ . }}</p>
   <input type="email" name="email" class="form-control" placeholder="Email" required autofocus>
   <input type="password" name="password" class="form-control" placeholder="パスワード">
   <br/>
