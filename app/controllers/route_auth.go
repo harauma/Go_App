@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"go_todo/app/models"
 	"log"
 	"net/http"
@@ -25,20 +26,20 @@ func signup(w http.ResponseWriter, r *http.Request) {
 			Email:    r.PostFormValue("email"),
 			PassWord: r.PostFormValue("password"),
 		}
-		user, err := models.GetUserByEmail(newUser.Email)
+		_, err = models.GetUserByEmail(newUser.Email)
+		log.Println("err = ", err)
 		if err != nil {
-			log.Println(err)
-		}
-		if &user != nil {
-			log.Println("user is already exists")
-			message := "このメールアドレスはすでに登録されています"
-			generateHTML(w, message, "layout", "public_navbar", "signup")
-		} else {
+			if err != sql.ErrNoRows {
+				log.Println(err)
+			}
 			if err := newUser.CreateUser(); err != nil {
 				log.Println(err)
 			}
-
 			http.Redirect(w, r, "/", 302)
+		} else {
+			log.Println("user is already exists")
+			message := "このメールアドレスはすでに登録されています"
+			generateHTML(w, message, "layout", "public_navbar", "signup")
 		}
 	}
 }
