@@ -21,7 +21,7 @@ type ConfigList struct {
 
 var Config ConfigList
 
-func init() {
+func InitConfig() {
 	LoadConfig()
 	utils.Loggingsettings(Config.LogFile)
 }

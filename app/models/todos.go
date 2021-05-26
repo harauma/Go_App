@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"log"
 	"time"
 )
@@ -38,9 +39,9 @@ func GetTodo(id int) (todo Todo, err error) {
 	return todo, err
 }
 
-func GetTodos() (todos []Todo, err error) {
+func GetTodos(db *sql.DB) (todos []Todo, err error) {
 	cmd := `select id, content, user_id, created_at from todos`
-	rows, err := Db.Query(cmd)
+	rows, err := db.Query(cmd)
 	if err != nil {
 		log.Fatalln(err)
 	}

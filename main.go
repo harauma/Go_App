@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go_todo/app/controllers"
 	"go_todo/app/models"
+	"go_todo/config"
 	"log"
 )
 
@@ -15,6 +16,8 @@ func main() {
 
 	// log.Panicln("test")
 
+	config.InitConfig()
+	models.InitDb()
 	fmt.Println(models.Db)
 
 	err := controllers.StartMainServer()

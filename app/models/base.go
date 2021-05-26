@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/lib/pq"
 )
 
@@ -22,7 +23,11 @@ var err error
 // 	tableNameSession = "sessions"
 // )
 
-func init() {
+func InitDb() {
+	err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
+	if err != nil {
+		log.Fatalln(err)
+	}
 	appEnv := config.Config.AppEnv
 	if appEnv == "production" {
 		url := os.Getenv("DATABASE_URL")
