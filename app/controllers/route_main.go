@@ -79,7 +79,7 @@ func todoEdit(w http.ResponseWriter, r *http.Request, id int) {
 		if err != nil {
 			log.Println(err)
 		}
-		t, err := models.GetTodo(id)
+		t, err := models.GetTodo(models.Db, id)
 		if err != nil {
 			log.Println(err)
 		}
@@ -125,7 +125,7 @@ func todoDelete(w http.ResponseWriter, r *http.Request, id int) {
 		if err != nil {
 			log.Println(err)
 		}
-		t, err := models.GetTodo(id)
+		t, err := models.GetTodo(models.Db, id)
 		if err != nil {
 			log.Println(err)
 		}

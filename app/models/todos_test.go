@@ -8,14 +8,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 )
 
-func init() {
-
-}
-
 func TestGetTodos(t *testing.T) {
-	// 相対パスを再設定する
-	// apath, _ := filepath.Abs("../")
-	// os.Chdir(apath)
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("failed to init db mock")
@@ -38,4 +31,30 @@ func TestGetTodos(t *testing.T) {
 		t.Fatalf("failed to ExpectationWerMet(): %s", err)
 	}
 
+}
+
+func TestGetTodo(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("failed to init db mock")
+	}
+	defer db.Close()
+	time := time.Now()
+	todo := Todo{1, "test", 1, time}
+	columns := []string{"id", "content", "user_id", "created_at"}
+	mock.ExpectQuery(regexp.QuoteMeta(`select id, content, user_id, created_at from todos where id = $1`)).
+		WithArgs(1).WillReturnRows(sqlmock.NewRows(columns).AddRow(1, "test", 1, time))
+
+	resultTodo, err := GetTodo(db, 1)
+	if err != nil {
+		t.Fatalf("failed to get todo: %s", err)
+	}
+
+	if todo != resultTodo {
+		t.Fatalf("It's a different value than the expected value.: %v", resultTodo)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Fatalf("failed to ExpectationWerMet(): %s", err)
+	}
 }
