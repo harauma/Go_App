@@ -37,11 +37,17 @@ func InitDb() {
 		if err != nil {
 			log.Fatalln(err)
 		}
+		if err = Db.Ping(); err != nil {
+			log.Fatalln(err)
+		}
 	} else if appEnv == "develop" {
 		log.Println(appEnv)
 		connection := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("PASSWORD"))
 		Db, err = sql.Open(config.Config.SQLDriver, connection)
 		if err != nil {
+			log.Fatalln(err)
+		}
+		if err = Db.Ping(); err != nil {
 			log.Fatalln(err)
 		}
 	} else {
