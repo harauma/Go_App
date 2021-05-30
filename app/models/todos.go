@@ -13,15 +13,28 @@ type Todo struct {
 	CreatedAt time.Time
 }
 
-func (u *User) CreateTodo(content string) (err error) {
+func (u *User) CreateTodo(db *sql.DB, content string) (err error) {
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			log.Println(err)
+			tx.Rollback()
+		}
+	}()
+
 	cmd := `insert into todos (
 		content,
 		user_id,
 		created_at) values ($1, $2, $3)`
-	_, err = Db.Exec(cmd, content, u.ID, time.Now())
-	if err != nil {
-		log.Fatalln(err)
-	}
+	_, err = tx.Exec(cmd, content, u.ID, time.Now())
+
 	return err
 }
 
