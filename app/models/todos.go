@@ -62,11 +62,11 @@ func GetTodos(db *sql.DB) (todos []Todo, err error) {
 	return todos, err
 }
 
-func (u *User) GetTodosByUser() (todos []Todo, err error) {
+func (u *User) GetTodosByUser(db *sql.DB) (todos []Todo, err error) {
 	cmd := `select id, content, user_id, created_at from todos
 	where user_id = $1`
 
-	rows, err := Db.Query(cmd, u.ID)
+	rows, err := db.Query(cmd, u.ID)
 	if err != nil {
 		log.Fatalln(err)
 	}

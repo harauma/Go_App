@@ -26,7 +26,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
-		todos, err := user.GetTodosByUser()
+		todos, err := user.GetTodosByUser(models.Db)
 		if err != nil {
 			log.Println(err)
 		}
