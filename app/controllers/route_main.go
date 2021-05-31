@@ -108,7 +108,7 @@ func todoUpdate(w http.ResponseWriter, r *http.Request, id int) {
 			Content: content,
 			UserID:  user.ID,
 		}
-		if err := t.UpdateTodo(); err != nil {
+		if err := t.UpdateTodo(models.Db); err != nil {
 			log.Println(err)
 		}
 		http.Redirect(w, r, "/todos", 302)

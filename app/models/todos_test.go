@@ -119,3 +119,22 @@ func TestGetTodosByUser(t *testing.T) {
 		t.Fatalf("failed to ExpectationWerMet(): %s", err)
 	}
 }
+func TestUpdateTodo(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	time := time.Now()
+	todo := Todo{ID: 1, Content: "testTodo", UserID: 1, CreatedAt: time}
+	mock.ExpectBegin()
+	mock.ExpectExec(regexp.QuoteMeta(`update todos set content = $1, user_id = $2
+	where id = $3`)).
+		WithArgs("testTodo", todo.UserID, todo.ID).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	// モック化されたDBを用いてテスト対象関数を実行
+	if err = todo.UpdateTodo(db); err != nil {
+		t.Errorf("error was not expected while updating stats: %s", err)
+	}
+}
