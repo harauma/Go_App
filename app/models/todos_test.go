@@ -72,7 +72,10 @@ func TestGetTodos(t *testing.T) {
 	}
 	defer db.Close()
 	time := time.Now()
-	todos := []Todo{{ID: 1, Content: "test", UserID: 1, CreatedAt: time}, {ID: 2, Content: "test2", UserID: 1, CreatedAt: time}}
+	todos := []Todo{
+		{ID: 1, Content: "test", UserID: 1, CreatedAt: time},
+		{ID: 2, Content: "test2", UserID: 1, CreatedAt: time},
+	}
 	columns := []string{"id", "content", "user_id", "created_at"}
 	mock.ExpectQuery(regexp.QuoteMeta("select id, content, user_id, created_at from todos")).
 		WillReturnRows(sqlmock.NewRows(columns).AddRow(1, "test", 1, time).AddRow(2, "test2", 1, time))
@@ -101,7 +104,10 @@ func TestGetTodosByUser(t *testing.T) {
 	defer db.Close()
 	time := time.Now()
 	u := User{ID: 1}
-	todos := []Todo{{ID: 1, Content: "test", UserID: 1, CreatedAt: time}, {ID: 2, Content: "test2", UserID: 1, CreatedAt: time}}
+	todos := []Todo{
+		{ID: 1, Content: "test", UserID: 1, CreatedAt: time},
+		{ID: 2, Content: "test2", UserID: 1, CreatedAt: time},
+	}
 	columns := []string{"id", "content", "user_id", "created_at"}
 	mock.ExpectQuery(regexp.QuoteMeta(`select id, content, user_id, created_at from todos where user_id = $1`)).
 		WithArgs(1).WillReturnRows(sqlmock.NewRows(columns).AddRow(1, "test", 1, time).AddRow(2, "test2", 1, time))
@@ -135,6 +141,25 @@ func TestUpdateTodo(t *testing.T) {
 
 	// モック化されたDBを用いてテスト対象関数を実行
 	if err = todo.UpdateTodo(db); err != nil {
+		t.Errorf("error was not expected while updating stats: %s", err)
+	}
+}
+
+func TestDeleteTodo(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	time := time.Now()
+	todo := Todo{ID: 1, Content: "testTodo", UserID: 1, CreatedAt: time}
+	mock.ExpectBegin()
+	mock.ExpectExec(regexp.QuoteMeta(`delete from todos where id = $1`)).
+		WithArgs(todo.ID).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	// モック化されたDBを用いてテスト対象関数を実行
+	if err = todo.DeleteTodo(db); err != nil {
 		t.Errorf("error was not expected while updating stats: %s", err)
 	}
 }

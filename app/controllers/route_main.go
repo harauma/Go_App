@@ -129,7 +129,7 @@ func todoDelete(w http.ResponseWriter, r *http.Request, id int) {
 		if err != nil {
 			log.Println(err)
 		}
-		if err := t.DeleteTodo(); err != nil {
+		if err := t.DeleteTodo(models.Db); err != nil {
 			log.Println(err)
 		}
 		http.Redirect(w, r, "/todos", 302)

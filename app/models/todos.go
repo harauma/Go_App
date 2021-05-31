@@ -119,17 +119,28 @@ func (t *Todo) UpdateTodo(db *sql.DB) error {
 	cmd := `update todos set content = $1, user_id = $2
 	where id = $3`
 	_, err = tx.Exec(cmd, t.Content, t.UserID, t.ID)
-	if err != nil {
-		log.Println(err)
-	}
+
 	return err
 }
 
-func (t *Todo) DeleteTodo() error {
-	cmd := `delete from todos where id = $1`
-	_, err = Db.Exec(cmd, t.ID)
+func (t *Todo) DeleteTodo(db *sql.DB) error {
+	tx, err := db.Begin()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			log.Println(err)
+			tx.Rollback()
+		}
+	}()
+
+	cmd := `delete from todos where id = $1`
+	_, err = tx.Exec(cmd, t.ID)
+
 	return err
 }
