@@ -22,16 +22,12 @@ var Db *sql.DB
 // )
 
 func InitDb() {
-	err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
-	if err != nil {
-		log.Fatalln(err)
-	}
 	appEnv := config.Config.AppEnv
 	if appEnv == "production" {
 		url := os.Getenv("DATABASE_URL")
 		connection, _ := pq.ParseURL(url)
 		connection += "sslmode=require"
-		Db, err = sql.Open(config.Config.SQLDriver, connection)
+		Db, err := sql.Open(config.Config.SQLDriver, connection)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -39,6 +35,10 @@ func InitDb() {
 			log.Fatalln(err)
 		}
 	} else if appEnv == "develop" {
+		err := godotenv.Load(fmt.Sprintf("./%s.env", os.Getenv("GO_ENV")))
+		if err != nil {
+			log.Fatalln(err)
+		}
 		log.Println(appEnv)
 		connection := fmt.Sprintf("user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("PASSWORD"))
 		Db, err = sql.Open(config.Config.SQLDriver, connection)
